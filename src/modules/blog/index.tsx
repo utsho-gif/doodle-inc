@@ -1,13 +1,19 @@
-import React from 'react';
-import { Container, Nav, Navbar } from 'react-bootstrap';
-import { FetchData } from '../../config/reactQuery';
+import {
+  Card,
+  Container,
+  ListGroup,
+  ListGroupItem,
+  Nav,
+  Navbar,
+} from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
+import { FetchData } from '../../config/reactQuery';
 
 const Blog = () => {
   const { blogId } = useParams();
 
   const commentData = FetchData({
-    url: `/comment/${blogId}`,
+    url: `/comments/${blogId}`,
     key: 'comment',
     dependency: true,
     dependencyValue: blogId,
@@ -25,6 +31,27 @@ const Blog = () => {
           </Nav>
         </Container>
       </Navbar>
+      <Container className="mt-4">
+        {commentData?.data?.comments?.length ? (
+          <div>
+            <h2>{commentData?.data?.blog.title}</h2>
+            <p>{commentData?.data?.blog.body}</p>
+
+            <Card>
+              <Card.Header>Comments</Card.Header>
+              <ListGroup variant="flush">
+                {commentData?.data?.comments.map((comment) => (
+                  <ListGroupItem key={comment?.id}>
+                    <strong>{comment?.name}</strong>: {comment.body}
+                  </ListGroupItem>
+                ))}
+              </ListGroup>
+            </Card>
+          </div>
+        ) : (
+          []
+        )}
+      </Container>
     </div>
   );
 };
