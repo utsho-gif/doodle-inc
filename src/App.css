@@ -40,3 +40,12 @@
 .read-the-docs {
   color: #888;
 } */
+.equal-height-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.equal-height-card .card-body {
+  flex-grow: 1;
+}
