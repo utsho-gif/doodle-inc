@@ -7,6 +7,7 @@ import ProgressBar from './components/ProgressBar';
 import './App.css';
 
 const HomePage = lazy(() => import('./modules/home'));
+const BlogPage = lazy(() => import('./modules/blog'));
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
         >
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/blog/:blogId" element={<BlogPage />} />
           </Routes>
         </Suspense>
       </Router>

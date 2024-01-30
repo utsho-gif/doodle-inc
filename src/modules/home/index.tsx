@@ -33,7 +33,7 @@ const Home = () => {
               <Col md={4} key={blog.id} className="mb-4">
                 <Card
                   as={Link}
-                  to={'somewhere'}
+                  to={`blog/${blog.id}`}
                   bg={'white'}
                   className="equal-height-card text-decoration-none card-hover-effect"
                 >
