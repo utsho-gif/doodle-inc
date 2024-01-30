@@ -51,6 +51,25 @@ export const FetchData = ({
   );
 };
 
+export const useFetchData = ({
+  url,
+  key,
+  optionalKey,
+  dependency,
+  dependencyValue,
+}: IFetchData) => {
+  return useQuery(
+    [key, optionalKey || ''],
+    async () => {
+      const { data } = await AxiosWithoutAuthInstance.get(`${url}`);
+      return data;
+    },
+    {
+      enabled: dependency ? !!dependencyValue : true,
+    }
+  );
+};
+
 export const PostData = ({
   url,
   key,

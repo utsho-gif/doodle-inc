@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from 'react';
 import {
   Card,
   Container,
@@ -7,18 +9,45 @@ import {
   Navbar,
 } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-import { FetchData } from '../../config/reactQuery';
 
 const Blog = () => {
-  const { blogId } = useParams();
+  const [commentData, setCommentData] = useState<any>(null);
+  const { blogId } = useParams<{ blogId: string }>();
 
-  const commentData = FetchData({
-    url: `/comments/${blogId}`,
-    key: 'comment',
-    dependency: true,
-    dependencyValue: blogId,
-  });
-  console.log({ commentData });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!blogId) {
+          console.error('Blog ID is undefined.');
+          return;
+        }
+
+        const cachedComments = sessionStorage.getItem(`comments-${blogId}`);
+        if (cachedComments) {
+          setCommentData(JSON.parse(cachedComments));
+          return;
+        }
+
+        const response = await fetch(
+          `http://localhost:5000/comments/${blogId}`
+        );
+        if (!response.ok) {
+          console.error(
+            `Error fetching comment data. Status: ${response.status}`
+          );
+          return;
+        }
+
+        const result = await response.json();
+        setCommentData(result);
+        sessionStorage.setItem(`comments-${blogId}`, JSON.stringify(result));
+      } catch (error) {
+        console.error('Error fetching comment data:', error);
+      }
+    };
+
+    fetchData();
+  }, [blogId]);
   return (
     <div>
       <Navbar bg="dark" data-bs-theme="dark">
@@ -32,19 +61,23 @@ const Blog = () => {
         </Container>
       </Navbar>
       <Container className="mt-4">
-        {commentData?.data?.comments?.length ? (
+        {commentData ? (
           <div>
-            <h2>{commentData?.data?.blog.title}</h2>
-            <p>{commentData?.data?.blog.body}</p>
+            <h2>{commentData?.blog?.title}</h2>
+            <p>{commentData?.blog?.body}</p>
 
             <Card>
               <Card.Header>Comments</Card.Header>
               <ListGroup variant="flush">
-                {commentData?.data?.comments.map((comment) => (
-                  <ListGroupItem key={comment?.id}>
-                    <strong>{comment?.name}</strong>: {comment.body}
-                  </ListGroupItem>
-                ))}
+                {commentData?.comments?.length ? (
+                  commentData?.comments.map((comment) => (
+                    <ListGroupItem key={comment?.id}>
+                      <strong>{comment?.name}</strong>: {comment.body}
+                    </ListGroupItem>
+                  ))
+                ) : (
+                  <p className="ms-3">No Comments Available</p>
+                )}
               </ListGroup>
             </Card>
           </div>
