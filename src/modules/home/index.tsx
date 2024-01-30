@@ -1,5 +1,12 @@
 import { Card, Col, Container, Nav, Navbar, Row } from 'react-bootstrap';
 import { FetchData } from '../../config/reactQuery';
+import { Link } from 'react-router-dom';
+
+interface IBlogData {
+  id: number;
+  title: string;
+  body: string;
+}
 
 const Home = () => {
   const blogData = FetchData({
@@ -7,7 +14,6 @@ const Home = () => {
     key: 'blog',
   });
 
-  console.log({ blogData });
   return (
     <div>
       <Navbar bg="dark" data-bs-theme="dark">
@@ -20,12 +26,17 @@ const Home = () => {
           </Nav>
         </Container>
       </Navbar>
-      {blogData?.data.length ? (
+      {blogData?.data?.length ? (
         <Container className="mt-4">
           <Row>
-            {blogData.data.map((blog) => (
+            {blogData.data.map((blog: IBlogData) => (
               <Col md={4} key={blog.id} className="mb-4">
-                <Card bg={'white'} className="equal-height-card">
+                <Card
+                  as={Link}
+                  to={'somewhere'}
+                  bg={'white'}
+                  className="equal-height-card text-decoration-none card-hover-effect"
+                >
                   <Card.Header>{blog.title}</Card.Header>
                   <Card.Body>
                     <Card.Text>{blog.body}</Card.Text>

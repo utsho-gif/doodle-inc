@@ -49,3 +49,11 @@
 .equal-height-card .card-body {
   flex-grow: 1;
 }
+
+.card-hover-effect {
+  transition: transform 0.2s ease-in-out;
+}
+
+.card-hover-effect:hover {
+  transform: scale(1.05);
+}
